@@ -3,15 +3,11 @@ import { RouterLink, RouterView } from 'vue-router'
 </script>
 
 <template>
-  <header>
-    <div class="wrapper">
-      <nav>
-        <RouterLink to="/">GF_TW</RouterLink>
-        <RouterLink to="/collaborate">Collaborate</RouterLink>
-      </nav>
-    </div>
-  </header>
-
+  <nav class="ui top fixed fluid menu">
+    <RouterLink class="item" to="/">實體店面</RouterLink>
+    <RouterLink class="item" to="/collaborate">上傳店面資料</RouterLink>
+  </nav>
+  <div class="small-space"></div>
   <RouterView />
 </template>
 

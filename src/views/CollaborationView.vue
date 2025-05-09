@@ -53,6 +53,16 @@
         </select>
       </div>
 
+
+      <div class="form-group">
+        <label for="vegetarian">素食選項 *</label>
+        <select id="vegetarian" v-model="formData.vegetarian" required>
+          <option value="全店">全店素食</option>
+          <option value="部份">部分餐點素食</option>
+          <option value="無">無素食</option>
+        </select>
+      </div>
+
       <div class="form-group">
         <label for="category">餐廳類型</label>
         <input
@@ -98,6 +108,8 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
+import { physical_storesRef, db } from '@/firebase'
+import { set, ref as dbRef, onValue } from 'firebase/database'
 
 interface RestaurantForm {
   name: string
@@ -105,11 +117,22 @@ interface RestaurantForm {
   phone: string
   businessHours: string
   glutenFree: string
+  vegetarian: string
   category: string
   menu: string
   notes: string
   latlng?: [number, number]
 }
+
+const physical_stores = ref<RestaurantForm[]>([])
+
+onValue(physical_storesRef, (snapshot) => {
+  const data = snapshot.val()
+  if (data) {
+    physical_stores.value = Object.values(data) as RestaurantForm[]
+  }
+})
+
 
 const formData = reactive<RestaurantForm>({
   name: '',
@@ -117,6 +140,7 @@ const formData = reactive<RestaurantForm>({
   phone: '',
   businessHours: '',
   glutenFree: '',
+  vegetarian: '',
   category: '',
   menu: '',
   notes: ''
@@ -161,19 +185,17 @@ async function submitForm() {
       return
     }
 
-    // 從 localStorage 獲取現有資料
-    const existingData = localStorage.getItem('restaurants')
-    const restaurants = existingData ? JSON.parse(existingData) : []
-
-    // 添加新資料
-    restaurants.push({
+    // 準備要儲存的資料
+    const storeData = {
       ...formData,
       latlng,
       timestamp: new Date().toISOString()
-    })
+    }
 
-    // 儲存回 localStorage
-    localStorage.setItem('restaurants', JSON.stringify(restaurants))
+    const index = physical_stores.value.length
+
+    // 使用 Firebase 儲存資料
+    await set(dbRef(db, 'physical_stores/' + index), storeData)
 
     // 顯示成功訊息
     showSuccess.value = true
@@ -185,6 +207,7 @@ async function submitForm() {
       phone: '',
       businessHours: '',
       glutenFree: '',
+      vegetarian: '',
       category: '',
       menu: '',
       notes: '',
