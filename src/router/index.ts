@@ -1,13 +1,19 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import GF_TW_View from '../views/GF_TW_View.vue'
+import CollaborationView from '../views/CollaborationView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: HomeView,
+      name: 'map',
+      component: GF_TW_View
+    },
+    {
+      path: '/collaborate',
+      name: 'collaborate',
+      component: CollaborationView
     },
     {
       path: '/about',
