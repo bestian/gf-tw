@@ -7,13 +7,13 @@ import { getAuth } from "firebase/auth";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyA33TjfaprwOUgYGaXrMaFsWzhsw7dRCRA",
-  authDomain: "start-vue.firebaseapp.com",
-  databaseURL: "https://start-vue.firebaseio.com",
-  projectId: "start-vue",
-  storageBucket: "start-vue.firebasestorage.app",
-  messagingSenderId: "1094423879350",
-  appId: "1:1094423879350:web:5ef0a1bfc24e51a2bc5017"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
 // Initialize Firebase
