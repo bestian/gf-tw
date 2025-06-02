@@ -9,9 +9,7 @@ import { RouterLink, RouterView } from 'vue-router'
     <RouterLink class="item" to="/collaborate">協作店面資料</RouterLink>
     <RouterLink class="item" to="/review">校對資料</RouterLink>
   </nav>
-  <div class="ui container">
-    <RouterView />
-  </div>
+  <RouterView />
   <footer class="ui footer">
     <div class="footer-content">
       <p>本站資料為開放協作，請協力校對維護。</p>

@@ -1,61 +1,63 @@
 <template>
-  <div class="map-container">
-    <div class="ui header">
-      <h1>無麩質餐廳地圖</h1>
-    </div>
-    <div class ="ui form">
-      <div class="two stackable fields">
-        <div class="field">
-          <label>搜尋</label>
-          <input type="text" v-model="search" placeholder="搜尋">
-        </div>
-        <div class="field">
-          <label>素食</label>
-          <select v-model="vegetarian" class="ui dropdown">
-            <option value="">葷素皆可</option>
-            <option value="全店">全店素食</option>
-            <option value="部份">部份餐點素食</option>
-            <option value="無">無素食</option>
-          </select>
+  <div class="ui container">
+    <div class="map-container">
+      <div class="ui header">
+        <h1>無麩質餐廳地圖</h1>
+      </div>
+      <div class ="ui form">
+        <div class="two stackable fields">
+          <div class="field">
+            <label>搜尋</label>
+            <input type="text" v-model="search" placeholder="搜尋">
+          </div>
+          <div class="field">
+            <label>素食</label>
+            <select v-model="vegetarian" class="ui dropdown">
+              <option value="">葷素皆可</option>
+              <option value="全店">全店素食</option>
+              <option value="部份">部份餐點素食</option>
+              <option value="無">無素食</option>
+            </select>
+          </div>
         </div>
       </div>
-    </div>
 
-    <l-map
-      style="height: calc(100vh - 50px); width: 100%"
-      :zoom="zoom"
-      :center="center"
-      @ready="onMapReady"
-    >
-      <l-tile-layer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution="&copy; OpenStreetMap contributors"
-      />
-      <l-marker
-        v-for="(marker, index) in filteredMarkers"
-        :key="index"
-        :lat-lng="marker.latlng"
-        :options="{ icon: createCustomIcon(marker.name) }"
+      <l-map
+        style="height: calc(100vh - 50px); width: 100%"
+        :zoom="zoom"
+        :center="center"
+        @ready="onMapReady"
       >
-        <l-popup>
-          <strong>{{ marker.name || '未命名' }}</strong><br />
-          📍 <a :href="`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(marker.address)}`" target="_blank" rel="noopener noreferrer">{{ marker.address || '無地址' }}</a><br />
-          ☎️ {{ marker.phone || '無電話' }}<br />
-          ✅ 無麩質：{{ marker.glutenFree || '無資料' }}<br />
-          🥬 素食：{{ marker.vegetarian || '無資料' }}<br />
-          🍽 餐點：{{ marker.menu || '無餐點資料' }}<br />
-          <span v-if="marker.businessHours">⏰ {{ marker.businessHours }}</span>
-          <span v-if="marker.category">🏷️ {{ marker.category }}</span>
-          <span v-if="marker.notes">📝 {{ marker.notes }}</span>
-          <br/>
-          <span v-if="marker.url">
-            <a :href="marker.url" target="_blank" rel="noopener noreferrer">🔗網址
-              {{ marker.url }}
-            </a>
-          </span>
-        </l-popup>
-      </l-marker>
-    </l-map>
+        <l-tile-layer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution="&copy; OpenStreetMap contributors"
+        />
+        <l-marker
+          v-for="(marker, index) in filteredMarkers"
+          :key="index"
+          :lat-lng="marker.latlng"
+          :options="{ icon: createCustomIcon(marker.name) }"
+        >
+          <l-popup>
+            <strong>{{ marker.name || '未命名' }}</strong><br />
+            📍 <a :href="`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(marker.address)}`" target="_blank" rel="noopener noreferrer">{{ marker.address || '無地址' }}</a><br />
+            ☎️ {{ marker.phone || '無電話' }}<br />
+            ✅ 無麩質：{{ marker.glutenFree || '無資料' }}<br />
+            🥬 素食：{{ marker.vegetarian || '無資料' }}<br />
+            🍽 餐點：{{ marker.menu || '無餐點資料' }}<br />
+            <span v-if="marker.businessHours">⏰ {{ marker.businessHours }}</span>
+            <span v-if="marker.category">🏷️ {{ marker.category }}</span>
+            <span v-if="marker.notes">📝 {{ marker.notes }}</span>
+            <br/>
+            <span v-if="marker.url">
+              <a :href="marker.url" target="_blank" rel="noopener noreferrer">🔗網址
+                {{ marker.url }}
+              </a>
+            </span>
+          </l-popup>
+        </l-marker>
+      </l-map>
+    </div>
   </div>
 </template>
 
