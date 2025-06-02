@@ -1,6 +1,8 @@
 <template>
   <div class="map-container">
-
+    <div class="ui header">
+      <h1>無麩質餐廳地圖</h1>
+    </div>
     <div class ="ui form">
       <div class="two stackable fields">
         <div class="field">
@@ -37,7 +39,7 @@
       >
         <l-popup>
           <strong>{{ marker.name || '未命名' }}</strong><br />
-          📍 {{ marker.address || '無地址' }}<br />
+          📍 <a :href="`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(marker.address)}`" target="_blank" rel="noopener noreferrer">{{ marker.address || '無地址' }}</a><br />
           ☎️ {{ marker.phone || '無電話' }}<br />
           ✅ 無麩質：{{ marker.glutenFree || '無資料' }}<br />
           🥬 素食：{{ marker.vegetarian || '無資料' }}<br />
@@ -45,6 +47,12 @@
           <span v-if="marker.businessHours">⏰ {{ marker.businessHours }}</span>
           <span v-if="marker.category">🏷️ {{ marker.category }}</span>
           <span v-if="marker.notes">📝 {{ marker.notes }}</span>
+          <br/>
+          <span v-if="marker.url">
+            <a :href="marker.url" target="_blank" rel="noopener noreferrer">🔗網址
+              {{ marker.url }}
+            </a>
+          </span>
         </l-popup>
       </l-marker>
     </l-map>
@@ -94,6 +102,7 @@ interface Restaurant {
   notes: string
   latlng: [number, number]
   timestamp?: string
+  url?: string
 }
 
 // 添加預設值函數
@@ -235,8 +244,22 @@ html, body, #app {
   padding: 2px 6px;
   border-radius: 4px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-  font-size: 12px;
+  font-size: 16px;
   white-space: nowrap;
   z-index: 1000;
+}
+
+/* 添加連結樣式 */
+.leaflet-popup-content a {
+  color: #42b983;
+  text-decoration: none;
+}
+
+.leaflet-popup-content a:hover {
+  text-decoration: underline;
+}
+
+.leaflet-popup-content {
+  font-size: 14px;
 }
 </style>
