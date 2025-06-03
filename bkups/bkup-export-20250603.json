@@ -1,0 +1,137 @@
+{
+  "physical_stores": [
+    {
+      "address": "台北市樂群三路301號3樓",
+      "businessHours": "11:30–15:00, 17:30–22:30",
+      "category": "",
+      "glutenFree": "部份",
+      "latlng": [
+        25.0827192,
+        121.5594059
+      ],
+      "menu": "",
+      "name": "茹絲葵牛排館(台北內湖店)",
+      "notes": "",
+      "phone": "02-8501-5900",
+      "timestamp": "2025-06-02T22:15:56.848Z",
+      "url": "https://www.ruthschris.com.tw/zh-TW",
+      "vegetarian": "部份"
+    },
+    {
+      "address": "台北市大安區辛亥路一段30號",
+      "businessHours": "09:00-21:00",
+      "category": "西式",
+      "glutenFree": "部份",
+      "latlng": [
+        25.01986,
+        121.52982
+      ],
+      "menu": "",
+      "name": "歐嬤德式美食 哥德店",
+      "notes": "",
+      "phone": "02-2362-0060",
+      "timestamp": "2025-05-09T21:30:26.212Z",
+      "url": "https://www.oma-de.com/",
+      "vegetarian": "部份"
+    }
+  ],
+  "web_stores": [
+    {
+      "name": "Boske",
+      "product_type": "米吐司",
+      "shared_line": "是",
+      "url": "https://www.facebook.com/boskebakery/?locale=zh_TW"
+    },
+    {
+      "name": "起士公爵",
+      "product_type": "甜點",
+      "shared_line": "是",
+      "url": "https://shop.cheeseduke.com.tw/pages/where-to-buy"
+    },
+    {
+      "name": "蔬特羅",
+      "product_type": "蛋白粉",
+      "shared_line": "否",
+      "url": "https://trueterral.com/"
+    },
+    {
+      "name": "米謝爾布魯",
+      "product_type": "西式餐點",
+      "shared_line": "是",
+      "url": "https://www.michelbru.com.tw/marketing_material/"
+    },
+    {
+      "name": "Deja Vu轉角遇見幸福",
+      "product_type": "甜點",
+      "shared_line": "是",
+      "url": "https://www.facebook.com/MissLavendeBaking"
+    },
+    {
+      "name": "恬米屋",
+      "product_type": "米甜點",
+      "shared_line": "否",
+      "url": "https://www.sweetricehouse.com.tw/"
+    },
+    {
+      "name": "無敏食堂",
+      "product_type": "米饅頭,米甜點",
+      "shared_line": "否",
+      "url": "https://www.facebook.com/DairyGlutenEggFreeDeserts"
+    },
+    {
+      "name": "微裸 純素無麩質甜點",
+      "product_type": "甜點",
+      "shared_line": "否",
+      "timestamp": "2025-06-02T22:25:36.193Z",
+      "url": "https://www.facebook.com/velvegan/"
+    },
+    {
+      "name": "蜜多甜",
+      "product_type": "甜點",
+      "shared_line": "否",
+      "url": "https://www.facebook.com/HoneyBakeryGlutenFree/"
+    },
+    {
+      "name": "牛菓子",
+      "product_type": "甜點",
+      "shared_line": "否",
+      "url": "https://www.facebook.com/2017naturalfood/"
+    },
+    {
+      "name": "切麩之tone",
+      "notes": "暫無接單",
+      "product_type": "甜點",
+      "shared_line": "否",
+      "timestamp": "2025-06-03T03:31:57.304Z",
+      "url": "https://www.facebook.com/%E5%88%87%E9%BA%A9%E4%B9%8Btone-101490154970453/"
+    },
+    {
+      "name": "岑食農產手作坊",
+      "product_type": "米餅乾",
+      "shared_line": "是",
+      "url": "https://www.facebook.com/cenfood/"
+    },
+    {
+      "name": "日以作夜-純素無麩質烘焙及料理空間",
+      "notes": "🌿所有產品皆無麩質、無奶蛋、無精製糖、無化學添加物",
+      "product_type": "甜點",
+      "shared_line": "否",
+      "timestamp": "2025-06-03T03:37:06.541Z",
+      "url": "https://www.facebook.com/dayfornight20180114/"
+    },
+    {
+      "name": "樂米鬆餅",
+      "product_type": "甜點",
+      "shared_line": "否",
+      "url": "https://www.facebook.com/%E6%A8%82%E7%B1%B3%E9%AC%86%E9%A4%85-683183135474415/"
+    },
+    {
+      "name": "許願Wishful 無麩質甜點",
+      "notes": "許願無麩質甜點3大堅持：無麩質 無蛋奶 無反式脂肪\n我們在許願時寄託希望正能量\n期待在品嚐每一口許願甜點的同時\n釋放你對健康 環境 和美味的期盼\n\n一起吃甜點許下屬於你的願望吧！",
+      "product_type": "甜點",
+      "shared_line": "是",
+      "timestamp": "2025-06-02T22:25:32.198Z",
+      "url": "https://www.facebook.com/wishfulcake/"
+    }
+  ]
+}
