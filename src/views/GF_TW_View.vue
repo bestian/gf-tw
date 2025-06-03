@@ -23,7 +23,7 @@
       </div>
 
       <l-map
-        style="height: calc(100vh - 50px); width: 100%"
+        style="height: calc(100vh - 100px); width: 100%"
         :zoom="zoom"
         :center="center"
         @ready="onMapReady"
@@ -123,8 +123,9 @@ function getDefaultRestaurant(): Restaurant {
   }
 }
 
-const center = ref<[number, number]>([25.0418, 121.5485]) // 台北市中心
-const zoom = ref(12)
+// 台灣中心
+const center = ref<[number, number]>([23.5, 121]) // 台北市中心
+const zoom = ref(7)
 const markers = ref<Restaurant[]>([])
 const search = ref('')
 const vegetarian = ref('')
