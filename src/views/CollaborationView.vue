@@ -13,7 +13,20 @@
 
     <!-- 實體店面表單 -->
     <div v-if="activeTab === 'physical'" class="ui bottom attached tab segment" :class="{ active: activeTab === 'physical' }">
-      <form @submit.prevent="submitPhysicalStore" class="restaurant-form">
+      <div class="restaurant-form">
+        <p v-show="!physicalEditing" class="form-collapsed-hint">
+          請先點「編輯」再填寫資料，以降低自動化濫填。
+        </p>
+        <button
+          v-show="!physicalEditing"
+          type="button"
+          class="submit-btn edit-entry-btn"
+          @click="physicalEditing = true"
+        >
+          編輯
+        </button>
+
+        <form v-show="physicalEditing" @submit.prevent="submitPhysicalStore">
         <div class="form-group">
           <label for="name">餐廳名稱 *</label>
           <input
@@ -115,13 +128,27 @@
           ></textarea>
         </div>
 
-        <button type="submit" class="submit-btn">送出資料</button>
-      </form>
+        <button type="submit" class="submit-btn">儲存</button>
+        </form>
+      </div>
     </div>
 
     <!-- 網路店面表單 -->
     <div v-if="activeTab === 'web'" class="ui bottom attached tab segment" :class="{ active: activeTab === 'web' }">
-      <form @submit.prevent="submitWebStore" class="restaurant-form">
+      <div class="restaurant-form">
+        <p v-show="!webEditing" class="form-collapsed-hint">
+          請先點「編輯」再填寫資料，以降低自動化濫填。
+        </p>
+        <button
+          v-show="!webEditing"
+          type="button"
+          class="submit-btn edit-entry-btn"
+          @click="webEditing = true"
+        >
+          編輯
+        </button>
+
+        <form v-show="webEditing" @submit.prevent="submitWebStore">
         <div class="form-group">
           <label for="webName">商店名稱 *</label>
           <input
@@ -173,8 +200,9 @@
           ></textarea>
         </div>
 
-        <button type="submit" class="submit-btn">送出資料</button>
-      </form>
+        <button type="submit" class="submit-btn">儲存</button>
+        </form>
+      </div>
     </div>
 
     <div v-if="showSuccess" class="success-message">
@@ -188,7 +216,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, watch } from 'vue'
 import { physical_storesRef, web_storesRef, db } from '@/firebase'
 import { set, ref as dbRef, onValue } from 'firebase/database'
 
@@ -215,6 +243,14 @@ interface WebStoreForm {
 }
 
 const activeTab = ref('physical')
+const physicalEditing = ref(false)
+const webEditing = ref(false)
+
+watch(activeTab, () => {
+  physicalEditing.value = false
+  webEditing.value = false
+})
+
 const physical_stores = ref<RestaurantForm[]>([])
 const web_stores = ref<WebStoreForm[]>([])
 
@@ -306,6 +342,7 @@ async function submitPhysicalStore() {
 
     // 顯示成功訊息
     showSuccess.value = true
+    physicalEditing.value = false
 
     // 重置表單
     Object.assign(formData, {
@@ -348,6 +385,7 @@ async function submitWebStore() {
 
     // 顯示成功訊息
     showSuccess.value = true
+    webEditing.value = false
 
     // 重置表單
     Object.assign(webFormData, {
@@ -440,6 +478,28 @@ h1 {
   box-shadow: var(--gf-shadow);
   border: 1.5px solid var(--gf-border);
   border-top: none;
+}
+
+.form-collapsed-hint {
+  margin: 0 0 1.1rem;
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: var(--gf-text-muted);
+  text-align: center;
+}
+
+.edit-entry-btn {
+  margin-top: 0;
+  background: var(--gf-bg);
+  color: var(--gf-green-deep);
+  border: 1.5px solid var(--gf-border);
+  box-shadow: none;
+}
+
+.edit-entry-btn:hover {
+  background: var(--gf-green-mist);
+  border-color: var(--gf-border-focus);
+  opacity: 1;
 }
 
 .form-group {

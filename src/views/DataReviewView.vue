@@ -31,39 +31,53 @@
           <tbody>
             <tr v-for="(store, index) in physicalStores" :key="index">
               <td>
-                <input type="text" v-model="store.name" class="ui input">
+                <span v-show="physicalEditingRow !== index" class="cell-readonly">{{ store.name || '—' }}</span>
+                <input v-show="physicalEditingRow === index" type="text" v-model="store.name" class="ui input">
               </td>
               <td>
-                <input type="text" v-model="store.address" class="ui input">
+                <span v-show="physicalEditingRow !== index" class="cell-readonly">{{ store.address || '—' }}</span>
+                <input v-show="physicalEditingRow === index" type="text" v-model="store.address" class="ui input">
               </td>
               <td>
-                <input type="text" v-model="store.phone" class="ui input">
+                <span v-show="physicalEditingRow !== index" class="cell-readonly">{{ store.phone || '—' }}</span>
+                <input v-show="physicalEditingRow === index" type="text" v-model="store.phone" class="ui input">
               </td>
               <td>
-                <input type="text" v-model="store.businessHours" class="ui input">
+                <span v-show="physicalEditingRow !== index" class="cell-readonly">{{ store.businessHours || '—' }}</span>
+                <input v-show="physicalEditingRow === index" type="text" v-model="store.businessHours" class="ui input">
               </td>
               <td>
-                <input type="url" v-model="store.url" class="ui input" placeholder="https://...">
+                <span v-show="physicalEditingRow !== index" class="cell-readonly cell-break">{{ store.url || '—' }}</span>
+                <input v-show="physicalEditingRow === index" type="url" v-model="store.url" class="ui input" placeholder="https://...">
               </td>
               <td>
-                <select v-model="store.glutenFree" class="ui dropdown">
+                <span v-show="physicalEditingRow !== index" class="cell-readonly">{{ (glutenFreeLabels[store.glutenFree] ?? store.glutenFree) || '—' }}</span>
+                <select v-show="physicalEditingRow === index" v-model="store.glutenFree" class="ui dropdown">
                   <option value="全">全店無麩質</option>
                   <option value="部份">部分餐點無麩質</option>
                   <option value="提供無麩質菜單">提供無麩質菜單</option>
                 </select>
               </td>
               <td>
-                <select v-model="store.vegetarian" class="ui dropdown">
+                <span v-show="physicalEditingRow !== index" class="cell-readonly">{{ (vegetarianLabels[store.vegetarian] ?? store.vegetarian) || '—' }}</span>
+                <select v-show="physicalEditingRow === index" v-model="store.vegetarian" class="ui dropdown">
                   <option value="全店">全店素食</option>
                   <option value="部份">部分餐點素食</option>
                   <option value="無">無素食</option>
                 </select>
               </td>
               <td>
-                <input type="text" v-model="store.category" class="ui input">
+                <span v-show="physicalEditingRow !== index" class="cell-readonly">{{ store.category || '—' }}</span>
+                <input v-show="physicalEditingRow === index" type="text" v-model="store.category" class="ui input">
               </td>
-              <td>
-                <button class="ui primary button" @click="savePhysicalStore(index)">儲存</button>
+              <td class="cell-actions">
+                <template v-if="physicalEditingRow !== index">
+                  <button type="button" class="ui button" @click="physicalEditingRow = index">編輯</button>
+                </template>
+                <template v-else>
+                  <button type="button" class="ui primary button" @click="savePhysicalStore(index)">儲存</button>
+                  <button type="button" class="ui button" @click="physicalEditingRow = null">取消</button>
+                </template>
               </td>
             </tr>
           </tbody>
@@ -88,25 +102,36 @@
           <tbody>
             <tr v-for="(store, index) in webStores" :key="index">
               <td>
-                <input type="text" v-model="store.name" class="ui input">
+                <span v-show="webEditingRow !== index" class="cell-readonly">{{ store.name || '—' }}</span>
+                <input v-show="webEditingRow === index" type="text" v-model="store.name" class="ui input">
               </td>
               <td>
-                <input type="url" v-model="store.url" class="ui input">
+                <span v-show="webEditingRow !== index" class="cell-readonly cell-break">{{ store.url || '—' }}</span>
+                <input v-show="webEditingRow === index" type="url" v-model="store.url" class="ui input">
               </td>
               <td>
-                <input type="text" v-model="store.product_type" class="ui input">
+                <span v-show="webEditingRow !== index" class="cell-readonly">{{ store.product_type || '—' }}</span>
+                <input v-show="webEditingRow === index" type="text" v-model="store.product_type" class="ui input">
               </td>
               <td>
-                <select v-model="store.shared_line" class="ui dropdown">
+                <span v-show="webEditingRow !== index" class="cell-readonly">{{ (sharedLineLabels[store.shared_line] ?? store.shared_line) || '—' }}</span>
+                <select v-show="webEditingRow === index" v-model="store.shared_line" class="ui dropdown">
                   <option value="否">無麩質專用生產線</option>
                   <option value="是">與麩質產品共用生產線</option>
                 </select>
               </td>
               <td>
-                <input type="text" v-model="store.notes" class="ui input">
+                <span v-show="webEditingRow !== index" class="cell-readonly cell-break">{{ store.notes || '—' }}</span>
+                <input v-show="webEditingRow === index" type="text" v-model="store.notes" class="ui input">
               </td>
-              <td>
-                <button class="ui primary button" @click="saveWebStore(index)">儲存</button>
+              <td class="cell-actions">
+                <template v-if="webEditingRow !== index">
+                  <button type="button" class="ui button" @click="webEditingRow = index">編輯</button>
+                </template>
+                <template v-else>
+                  <button type="button" class="ui primary button" @click="saveWebStore(index)">儲存</button>
+                  <button type="button" class="ui button" @click="webEditingRow = null">取消</button>
+                </template>
               </td>
             </tr>
           </tbody>
@@ -124,7 +149,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { physical_storesRef, web_storesRef, db } from '@/firebase'
 import { set, ref as dbRef, onValue } from 'firebase/database'
 
@@ -153,6 +178,31 @@ interface WebStore {
 }
 
 const activeTab = ref('physical')
+const physicalEditingRow = ref<number | null>(null)
+const webEditingRow = ref<number | null>(null)
+
+watch(activeTab, () => {
+  physicalEditingRow.value = null
+  webEditingRow.value = null
+})
+
+const glutenFreeLabels: Record<string, string> = {
+  全: '全店無麩質',
+  部份: '部分餐點無麩質',
+  提供無麩質菜單: '提供無麩質菜單'
+}
+
+const vegetarianLabels: Record<string, string> = {
+  全店: '全店素食',
+  部份: '部分餐點素食',
+  無: '無素食'
+}
+
+const sharedLineLabels: Record<string, string> = {
+  否: '無麩質專用生產線',
+  是: '與麩質產品共用生產線'
+}
+
 const physicalStores = ref<PhysicalStore[]>([])
 const webStores = ref<WebStore[]>([])
 const showMessage = ref(false)
@@ -207,6 +257,7 @@ async function saveWebStore(index: number) {
       timestamp: new Date().toISOString()
     })
     showSuccessMessage('網路店面資料已更新')
+    webEditingRow.value = null
   } catch (error) {
     console.error('Error saving web store:', error)
     showErrorMessage('儲存網路店面資料時發生錯誤')
@@ -260,11 +311,37 @@ h1 {
 
 .ui.table td {
   padding: 0.5rem;
+  vertical-align: top;
+}
+
+.cell-readonly {
+  display: inline-block;
+  max-width: 12rem;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: #2c3e50;
+}
+
+.cell-break {
+  word-break: break-word;
+}
+
+.cell-actions {
+  white-space: nowrap;
+}
+
+.cell-actions .ui.button {
+  width: auto;
+  min-width: 4.5rem;
 }
 
 .ui.button {
   margin: 0.25rem;
   width: 100%;
+}
+
+.cell-actions .ui.button + .ui.button {
+  margin-top: 0.35rem;
 }
 
 .ui.message {
