@@ -1,53 +1,52 @@
-/* color palette from <https://github.com/vuejs/theme> */
+/* 無麩質台灣 — Design System
+   調色靈感：台灣竹林、稻田、山野綠意 */
+
 :root {
-  --vt-c-white: #ffffff;
-  --vt-c-white-soft: #f8f8f8;
-  --vt-c-white-mute: #f2f2f2;
+  /* === 品牌綠色系 === */
+  --gf-green-deep:   #1e4d32;   /* 深竹綠 / 標題 */
+  --gf-green-forest: #2d6a4f;   /* 森林綠 / 主色 */
+  --gf-green-mid:    #40916c;   /* 茶綠 / 互動 */
+  --gf-green-sage:   #74c69d;   /* 嫩草綠 / 點綴 */
+  --gf-green-pale:   #d8f3dc;   /* 淡綠 / 懸停背景 */
+  --gf-green-mist:   #eef8f1;   /* 晨霧綠 / 最淺背景 */
 
-  --vt-c-black: #181818;
-  --vt-c-black-soft: #222222;
-  --vt-c-black-mute: #282828;
+  /* === 暖色點綴 === */
+  --gf-gold:         #b5832f;   /* 稻金 / 警示 */
+  --gf-gold-light:   #fef5e4;   /* 暖陽 / 警示背景 */
 
-  --vt-c-indigo: #2c3e50;
+  /* === 背景色 === */
+  --gf-bg:           #fdf8f0;   /* 米白 / 頁面底色 */
+  --gf-bg-card:      #ffffff;   /* 純白 / 卡片 */
+  --gf-bg-soft:      #f4ede0;   /* 暖棕 / 搜尋框 */
 
-  --vt-c-divider-light-1: rgba(60, 60, 60, 0.29);
-  --vt-c-divider-light-2: rgba(60, 60, 60, 0.12);
-  --vt-c-divider-dark-1: rgba(84, 84, 84, 0.65);
-  --vt-c-divider-dark-2: rgba(84, 84, 84, 0.48);
+  /* === 文字色 === */
+  --gf-text:         #1b3a2d;   /* 深林綠 / 主文字 */
+  --gf-text-muted:   #5a7568;   /* 霧灰綠 / 次要文字 */
 
-  --vt-c-text-light-1: var(--vt-c-indigo);
-  --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
-  --vt-c-text-dark-1: var(--vt-c-white);
-  --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
-}
+  /* === 邊框與陰影 === */
+  --gf-border:       rgba(64, 145, 108, 0.18);
+  --gf-border-focus: rgba(64, 145, 108, 0.6);
+  --gf-shadow-sm:    0 1px 4px rgba(30, 77, 50, 0.1);
+  --gf-shadow:       0 2px 12px rgba(30, 77, 50, 0.14);
+  --gf-shadow-lg:    0 4px 24px rgba(30, 77, 50, 0.16);
 
-/* semantic color variables for this project */
-:root {
-  --color-background: var(--vt-c-white);
-  --color-background-soft: var(--vt-c-white-soft);
-  --color-background-mute: var(--vt-c-white-mute);
+  /* === 圓角 === */
+  --gf-radius-sm:   6px;
+  --gf-radius:      10px;
+  --gf-radius-lg:   16px;
+  --gf-radius-pill: 100px;
 
-  --color-border: var(--vt-c-divider-light-2);
-  --color-border-hover: var(--vt-c-divider-light-1);
+  /* === 導覽列高度（共用於地圖計算）=== */
+  --nav-h: 52px;
 
-  --color-heading: var(--vt-c-text-light-1);
-  --color-text: var(--vt-c-text-light-1);
-
-  --section-gap: 160px;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-background: var(--vt-c-black);
-    --color-background-soft: var(--vt-c-black-soft);
-    --color-background-mute: var(--vt-c-black-mute);
-
-    --color-border: var(--vt-c-divider-dark-2);
-    --color-border-hover: var(--vt-c-divider-dark-1);
-
-    --color-heading: var(--vt-c-text-dark-1);
-    --color-text: var(--vt-c-text-dark-2);
-  }
+  /* === 舊版相容別名 === */
+  --color-background:      var(--gf-bg);
+  --color-background-soft: var(--gf-bg-soft);
+  --color-background-mute: #ece5d4;
+  --color-border:          var(--gf-border);
+  --color-border-hover:    var(--gf-border-focus);
+  --color-heading:         var(--gf-text);
+  --color-text:            var(--gf-text);
 }
 
 *,
@@ -60,24 +59,17 @@
 
 body {
   min-height: 100vh;
-  color: var(--color-text);
-  background: var(--color-background);
-  transition:
-    color 0.5s,
-    background-color 0.5s;
-  line-height: 1.6;
+  color: var(--gf-text);
+  background: var(--gf-bg);
+  transition: color 0.3s, background-color 0.3s;
+  line-height: 1.7;
   font-family:
-    Inter,
+    'PingFang TC',
+    'Noto Sans TC',
     -apple-system,
     BlinkMacSystemFont,
     'Segoe UI',
     Roboto,
-    Oxygen,
-    Ubuntu,
-    Cantarell,
-    'Fira Sans',
-    'Droid Sans',
-    'Helvetica Neue',
     sans-serif;
   font-size: 15px;
   text-rendering: optimizeLegibility;

@@ -372,117 +372,173 @@ async function submitWebStore() {
 
 <style scoped>
 .collaboration-container {
-  max-width: 800px;
+  max-width: 680px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 2.5rem 1.25rem 5rem;
 }
 
 h1 {
   text-align: center;
-  color: #2c3e50;
-  margin-bottom: 2rem;
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--gf-green-deep);
+  letter-spacing: 0.04em;
+  margin-bottom: 1.75rem;
 }
 
-.restaurant-form {
-  background: #fff;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-}
-
-.form-group {
-  margin-bottom: 1.5rem;
-}
-
-label {
-  display: block;
-  margin-bottom: 0.5rem;
-  color: #2c3e50;
-  font-weight: 500;
-}
-
-input, select, textarea {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 1rem;
-}
-
-input:focus, select:focus, textarea:focus {
-  outline: none;
-  border-color: #42b983;
-  box-shadow: 0 0 0 2px rgba(66, 185, 131, 0.2);
-}
-
-.submit-btn {
-  background-color: #42b983;
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 4px;
-  font-size: 1rem;
-  cursor: pointer;
-  width: 100%;
-  transition: background-color 0.3s;
-}
-
-.submit-btn:hover {
-  background-color: #3aa876;
-}
-
-.success-message {
-  margin-top: 1rem;
-  padding: 1rem;
-  background-color: #d4edda;
-  color: #155724;
-  border-radius: 4px;
-  text-align: center;
-}
-
-.error-message {
-  margin-top: 1rem;
-  padding: 1rem;
-  background-color: #f8d7da;
-  color: #721c24;
-  border-radius: 4px;
-  text-align: center;
-}
-
-@media (max-width: 768px) {
-  .collaboration-container {
-    padding: 1rem;
-  }
-
-  .restaurant-form {
-    padding: 1rem;
-  }
-}
-
+/* ── 分頁標籤 ── */
 .ui.tabular.menu {
   margin-bottom: 0;
+  border-bottom: 2px solid var(--gf-green-pale);
+  display: flex;
+  gap: 0.25rem;
 }
 
 .ui.tabular.menu .item {
   cursor: pointer;
+  padding: 0.65rem 1.25rem;
+  font-size: 0.9rem;
+  color: var(--gf-text-muted);
+  border-radius: var(--gf-radius-sm) var(--gf-radius-sm) 0 0;
+  border: 1.5px solid transparent;
+  border-bottom: none;
+  transition: color 0.2s, background-color 0.2s;
+  user-select: none;
+  margin-bottom: -2px;
+}
+
+.ui.tabular.menu .item:hover {
+  color: var(--gf-green-forest);
+  background-color: var(--gf-green-mist);
 }
 
 .ui.tabular.menu .item.active {
-  background-color: #fff;
-  border-color: #ddd;
-  border-bottom-color: #fff;
-  font-weight: bold;
+  color: var(--gf-green-deep);
+  font-weight: 700;
+  background-color: var(--gf-bg-card);
+  border-color: var(--gf-green-pale);
+  border-bottom-color: var(--gf-bg-card);
 }
 
+/* ── 表單區塊 ── */
 .ui.bottom.attached.tab.segment {
-  border-top: none;
-  border-radius: 0 0 4px 4px;
+  border: none;
+  border-radius: 0 var(--gf-radius) var(--gf-radius) var(--gf-radius);
   margin-top: 0;
-  padding: 1rem;
+  padding: 0;
   display: none;
 }
 
 .ui.bottom.attached.tab.segment.active {
   display: block;
+}
+
+.restaurant-form {
+  background: var(--gf-bg-card);
+  padding: 1.75rem 2rem;
+  border-radius: 0 var(--gf-radius-lg) var(--gf-radius-lg) var(--gf-radius-lg);
+  box-shadow: var(--gf-shadow);
+  border: 1.5px solid var(--gf-border);
+  border-top: none;
+}
+
+.form-group {
+  margin-bottom: 1.35rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.42rem;
+  color: var(--gf-text);
+  font-weight: 600;
+  font-size: 0.88rem;
+  letter-spacing: 0.01em;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 0.68rem 0.9rem;
+  border: 1.5px solid rgba(64, 145, 108, 0.22);
+  border-radius: var(--gf-radius-sm);
+  font-size: 0.95rem;
+  color: var(--gf-text);
+  background: var(--gf-bg);
+  font-family: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--gf-border-focus);
+  box-shadow: 0 0 0 3px rgba(64, 145, 108, 0.1);
+  background: var(--gf-bg-card);
+}
+
+textarea {
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 0.78rem 1.5rem;
+  background: linear-gradient(135deg, var(--gf-green-mid) 0%, var(--gf-green-forest) 100%);
+  color: white;
+  border: none;
+  border-radius: var(--gf-radius);
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  transition: opacity 0.2s, transform 0.15s;
+  margin-top: 0.5rem;
+}
+
+.submit-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.submit-btn:active {
+  transform: translateY(0);
+}
+
+/* ── 訊息提示 ── */
+.success-message {
+  margin-top: 1rem;
+  padding: 0.9rem 1.1rem;
+  background: var(--gf-green-pale);
+  color: var(--gf-green-deep);
+  border: 1.5px solid rgba(64, 145, 108, 0.35);
+  border-radius: var(--gf-radius);
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.error-message {
+  margin-top: 1rem;
+  padding: 0.9rem 1.1rem;
+  background: var(--gf-gold-light);
+  color: var(--gf-gold);
+  border: 1.5px solid rgba(181, 131, 47, 0.35);
+  border-radius: var(--gf-radius);
+  text-align: center;
+  font-size: 0.92rem;
+}
+
+@media (max-width: 640px) {
+  .collaboration-container {
+    padding: 1.5rem 1rem 3rem;
+  }
+
+  .restaurant-form {
+    padding: 1.25rem 1rem;
+  }
 }
 </style>

@@ -1,29 +1,39 @@
 <template>
-  <div class="ui container">
-    <div class="map-container">
-      <div class="ui header">
-        <h1>無麩質餐廳地圖</h1>
-      </div>
-      <div class ="ui form">
-        <div class="two stackable fields">
-          <div class="field">
-            <label>搜尋</label>
-            <input type="text" v-model="search" placeholder="搜尋">
-          </div>
-          <div class="field">
-            <label>素食</label>
-            <select v-model="vegetarian" class="ui dropdown">
-              <option value="">葷素皆可</option>
-              <option value="全店">全店素食</option>
-              <option value="部份">部份餐點素食</option>
-              <option value="無">無素食</option>
-            </select>
-          </div>
+  <div class="gf-map-page">
+    <!-- 搜尋控制列 -->
+    <div class="gf-controls-bar">
+      <div class="controls-row">
+        <div class="search-wrap" :class="{ active: search }">
+          <svg class="search-svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+            <circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input
+            type="text"
+            v-model="search"
+            placeholder="搜尋店名、地址、料理類型…"
+            class="search-input"
+          >
+          <button v-if="search" class="clear-btn" @click="search = ''" aria-label="清除">✕</button>
         </div>
-      </div>
 
+        <select v-model="vegetarian" class="veg-filter">
+          <option value="">葷素皆可</option>
+          <option value="全店">🥬 全店素食</option>
+          <option value="部份">🥗 部份素食</option>
+          <option value="無">🍖 無素食</option>
+        </select>
+
+        <span class="count-chip" v-if="filteredMarkers.length > 0">
+          {{ filteredMarkers.length }} 家
+        </span>
+      </div>
+    </div>
+
+    <!-- 地圖 -->
+    <div class="gf-map-area">
       <l-map
-        style="height: calc(100vh - 100px); width: 100%"
+        style="height: 100%; width: 100%"
         :zoom="zoom"
         :center="center"
         @ready="onMapReady"
@@ -39,21 +49,52 @@
           :options="{ icon: createCustomIcon(marker.name) }"
         >
           <l-popup>
-            <strong>{{ marker.name || '未命名' }}</strong><br />
-            📍 <a :href="`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(marker.address)}`" target="_blank" rel="noopener noreferrer">{{ marker.address || '無地址' }}</a><br />
-            ☎️ {{ marker.phone || '無電話' }}<br />
-            ✅ 無麩質：{{ marker.glutenFree || '無資料' }}<br />
-            🥬 素食：{{ marker.vegetarian || '無資料' }}<br />
-            🍽 餐點：{{ marker.menu || '無餐點資料' }}<br />
-            <span v-if="marker.businessHours">⏰ {{ marker.businessHours }}</span>
-            <span v-if="marker.category">🏷️ {{ marker.category }}</span>
-            <span v-if="marker.notes">📝 {{ marker.notes }}</span>
-            <br/>
-            <span v-if="marker.url">
-              <a :href="marker.url" target="_blank" rel="noopener noreferrer">🔗網址
-                {{ marker.url }}
-              </a>
-            </span>
+            <div class="gf-popup-card">
+              <div class="popup-title">{{ marker.name || '未命名' }}</div>
+              <div class="popup-rows">
+                <div class="popup-row" v-if="marker.address">
+                  <span class="popup-tag">📍</span>
+                  <a
+                    :href="`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(marker.address)}`"
+                    target="_blank" rel="noopener noreferrer" class="popup-link"
+                  >{{ marker.address }}</a>
+                </div>
+                <div class="popup-row" v-if="marker.phone">
+                  <span class="popup-tag">☎</span>
+                  <span>{{ marker.phone }}</span>
+                </div>
+                <div class="popup-row">
+                  <span class="popup-tag">✓</span>
+                  <span class="gf-badge">無麩質：{{ marker.glutenFree || '無資料' }}</span>
+                </div>
+                <div class="popup-row" v-if="marker.vegetarian">
+                  <span class="popup-tag">🥬</span>
+                  <span>素食：{{ marker.vegetarian }}</span>
+                </div>
+                <div class="popup-row" v-if="marker.menu">
+                  <span class="popup-tag">🍽</span>
+                  <span>{{ marker.menu }}</span>
+                </div>
+                <div class="popup-row" v-if="marker.businessHours">
+                  <span class="popup-tag">⏰</span>
+                  <span>{{ marker.businessHours }}</span>
+                </div>
+                <div class="popup-row" v-if="marker.category">
+                  <span class="popup-tag">🏷</span>
+                  <span>{{ marker.category }}</span>
+                </div>
+                <div class="popup-row" v-if="marker.notes">
+                  <span class="popup-tag">📝</span>
+                  <span>{{ marker.notes }}</span>
+                </div>
+                <div class="popup-row" v-if="marker.url">
+                  <span class="popup-tag">🔗</span>
+                  <a :href="marker.url" target="_blank" rel="noopener noreferrer" class="popup-link">
+                    官方網站 ↗
+                  </a>
+                </div>
+              </div>
+            </div>
           </l-popup>
         </l-marker>
       </l-map>
@@ -69,22 +110,28 @@ import L from 'leaflet'
 import { physical_storesRef } from '@/firebase'
 import { onValue } from 'firebase/database'
 
-// 創建自定義圖示函數
 function createCustomIcon(name: string) {
+  const safeName = name.replace(/</g, '&lt;').replace(/>/g, '&gt;')
   return L.divIcon({
-    className: 'custom-marker',
+    className: 'gf-marker',
     html: `
-      <div class="marker-container">
-        <img src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png" class="marker-icon">
-        <div class="marker-label">${name}</div>
+      <div class="gf-pin-wrap">
+        <div class="gf-pin-label">${safeName}</div>
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="40" viewBox="0 0 28 40">
+          <path d="M14 2C8.48 2 4 6.48 4 12c0 8.5 10 26 10 26s10-17.5 10-26C24 6.48 19.52 2 14 2z"
+                fill="#40916c" stroke="#1e4d32" stroke-width="1.5"/>
+          <circle cx="14" cy="12" r="5.8" fill="white" opacity="0.93"/>
+          <path d="M14 7.5 C17 9.5 17 12.2 14 15.8 C11 12.2 11 9.5 14 7.5Z" fill="#2d6a4f" opacity="0.85"/>
+        </svg>
       </div>
     `,
-    iconSize: [25, 41],
-    iconAnchor: [12, 41]
+    iconSize: [28, 40],
+    iconAnchor: [14, 40],
+    popupAnchor: [0, -44]
   })
 }
 
-// 修復 Leaflet 圖示問題
+// 修復 Leaflet 預設圖示（備用）
 delete (L.Icon.Default.prototype as { _getIconUrl?: string })._getIconUrl
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
@@ -107,65 +154,46 @@ interface Restaurant {
   url?: string
 }
 
-// 添加預設值函數
 function getDefaultRestaurant(): Restaurant {
   return {
-    name: '',
-    address: '',
-    phone: '',
-    businessHours: '',
-    glutenFree: '',
-    vegetarian: '',
-    category: '',
-    menu: '',
-    notes: '',
-    latlng: [0, 0]
+    name: '', address: '', phone: '', businessHours: '',
+    glutenFree: '', vegetarian: '', category: '', menu: '',
+    notes: '', latlng: [0, 0]
   }
 }
 
-// 台灣中心
-const center = ref<[number, number]>([23.5, 121]) // 台北市中心
+const center = ref<[number, number]>([23.5, 121])
 const zoom = ref(7)
 const markers = ref<Restaurant[]>([])
 const search = ref('')
 const vegetarian = ref('')
 
-const filteredMarkers = computed(() => {
-  return markers.value.filter(marker => {
-
-    let ans = true
-    if (search.value &&
-      !marker.name.toLowerCase().includes(search.value.toLowerCase())
-      && !marker.address.toLowerCase().includes(search.value.toLowerCase())
-      && !marker.category.toLowerCase().includes(search.value.toLowerCase())
-      && !marker.menu.toLowerCase().includes(search.value.toLowerCase())
-      && !marker.notes.toLowerCase().includes(search.value.toLowerCase())
-      && !marker.phone.toLowerCase().includes(search.value.toLowerCase())
-      && !marker.businessHours.toLowerCase().includes(search.value.toLowerCase())
-      && !marker.glutenFree.toLowerCase().includes(search.value.toLowerCase())
-    ) {
-      ans = false
-    }
-
-    if (vegetarian.value && vegetarian.value != marker.vegetarian) {
-      ans = false
-    }
-    return ans
+const filteredMarkers = computed(() =>
+  markers.value.filter(marker => {
+    if (
+      search.value &&
+      !marker.name.toLowerCase().includes(search.value.toLowerCase()) &&
+      !marker.address.toLowerCase().includes(search.value.toLowerCase()) &&
+      !marker.category.toLowerCase().includes(search.value.toLowerCase()) &&
+      !marker.menu.toLowerCase().includes(search.value.toLowerCase()) &&
+      !marker.notes.toLowerCase().includes(search.value.toLowerCase()) &&
+      !marker.phone.toLowerCase().includes(search.value.toLowerCase()) &&
+      !marker.businessHours.toLowerCase().includes(search.value.toLowerCase()) &&
+      !marker.glutenFree.toLowerCase().includes(search.value.toLowerCase())
+    ) return false
+    if (vegetarian.value && vegetarian.value !== marker.vegetarian) return false
+    return true
   })
-})
+)
 
-async function loadMarkers() {
-  // 使用 Firebase 即時監聽資料
+function loadMarkers() {
   onValue(physical_storesRef, (snapshot) => {
     const data = snapshot.val()
     if (data) {
-      markers.value = Object.values(data).map(store => {
-        const defaultStore = getDefaultRestaurant()
-        return {
-          ...defaultStore,
-          ...(store as Partial<Restaurant>)
-        } as Restaurant
-      })
+      markers.value = Object.values(data).map(store => ({
+        ...getDefaultRestaurant(),
+        ...(store as Partial<Restaurant>)
+      } as Restaurant))
     }
   }, (error) => {
     console.error('Error loading markers:', error)
@@ -173,96 +201,245 @@ async function loadMarkers() {
 }
 
 function onMapReady() {
-  console.log('Map is ready')
   loadMarkers()
 }
 
-onMounted(() => {
-  console.log('Component mounted')
-})
+onMounted(() => {})
 </script>
 
 <style>
-html, body, #app {
+/* 全版地圖頁基底 */
+html, body {
   margin: 0;
-  height: 100%;
+  padding: 0;
 }
 
-.map-container {
-  position: relative;
-  height: 100vh;
-}
-
-.nav-bar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 50px;
-  background-color: #42b983;
+.gf-map-page {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  height: calc(100vh - var(--nav-h));
+  overflow: hidden;
+}
+
+/* ── 搜尋控制列 ── */
+.gf-controls-bar {
+  flex-shrink: 0;
+  background: var(--gf-bg-card);
+  border-bottom: 1px solid var(--gf-border);
+  padding: 0.55rem 1rem;
+  box-shadow: 0 2px 8px rgba(30, 77, 50, 0.08);
+  z-index: 999;
+}
+
+.controls-row {
+  display: flex;
   align-items: center;
-  z-index: 1000;
+  gap: 0.6rem;
+  max-width: 900px;
 }
 
-.nav-link {
-  color: white;
-  text-decoration: none;
-  padding: 0.5rem 1rem;
-  margin: 0 0.5rem;
-  border-radius: 4px;
-  transition: background-color 0.3s;
+.search-wrap {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  background: var(--gf-bg-soft);
+  border: 1.5px solid var(--gf-border);
+  border-radius: var(--gf-radius-pill);
+  padding: 0 0.85rem;
+  transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
 }
 
-.nav-link:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+.search-wrap:focus-within {
+  border-color: var(--gf-border-focus);
+  box-shadow: 0 0 0 3px rgba(64, 145, 108, 0.1);
+  background: var(--gf-bg-card);
 }
 
-.nav-link.router-link-active {
-  background-color: rgba(255, 255, 255, 0.2);
+.search-svg {
+  color: var(--gf-text-muted);
+  flex-shrink: 0;
+  margin-right: 0.4rem;
 }
 
-.custom-marker {
+.search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 0.52rem 0;
+  font-size: 0.9rem;
+  color: var(--gf-text);
+  outline: none;
+  font-family: inherit;
+}
+
+.search-input::placeholder {
+  color: #8aab97;
+}
+
+.clear-btn {
   background: none;
   border: none;
+  cursor: pointer;
+  color: var(--gf-text-muted);
+  font-size: 0.8rem;
+  padding: 0.1rem 0.2rem;
+  line-height: 1;
+  transition: color 0.2s;
+  flex-shrink: 0;
 }
 
-.marker-container {
+.clear-btn:hover {
+  color: var(--gf-text);
+}
+
+.veg-filter {
+  border: 1.5px solid var(--gf-border);
+  border-radius: var(--gf-radius-pill);
+  padding: 0.5rem 0.9rem;
+  font-size: 0.875rem;
+  color: var(--gf-text);
+  background: var(--gf-bg-card);
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  font-family: inherit;
+  flex-shrink: 0;
+}
+
+.veg-filter:focus {
+  border-color: var(--gf-border-focus);
+  box-shadow: 0 0 0 3px rgba(64, 145, 108, 0.1);
+}
+
+.count-chip {
+  display: inline-flex;
+  align-items: center;
+  background: var(--gf-green-pale);
+  color: var(--gf-green-deep);
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.28rem 0.75rem;
+  border-radius: var(--gf-radius-pill);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── 地圖區 ── */
+.gf-map-area {
+  flex: 1;
+  position: relative;
+  min-height: 0;
+}
+
+/* ── 自訂地標 ── */
+.gf-marker {
+  background: none !important;
+  border: none !important;
+  overflow: visible !important;
+}
+
+.gf-pin-wrap {
   position: relative;
   display: inline-block;
+  overflow: visible;
 }
 
-.marker-icon {
-  width: 25px;
-  height: 41px;
-}
-
-.marker-label {
+.gf-pin-label {
   position: absolute;
-  top: -25px;
+  top: -28px;
   left: 50%;
   transform: translateX(-50%);
-  background: white;
-  padding: 2px 6px;
-  border-radius: 4px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-  font-size: 16px;
+  background: rgba(255, 255, 255, 0.97);
+  color: var(--gf-green-deep);
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 700;
   white-space: nowrap;
-  z-index: 1000;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.18);
+  border: 1.5px solid rgba(64, 145, 108, 0.4);
+  max-width: 110px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.5;
+  pointer-events: none;
+  font-family: 'PingFang TC', 'Noto Sans TC', sans-serif;
 }
 
-/* 添加連結樣式 */
-.leaflet-popup-content a {
-  color: #42b983;
-  text-decoration: none;
-}
-
-.leaflet-popup-content a:hover {
-  text-decoration: underline;
+/* ── 彈出視窗 ── */
+.leaflet-popup-content-wrapper {
+  border-radius: var(--gf-radius-lg) !important;
+  box-shadow: 0 6px 24px rgba(30, 77, 50, 0.2) !important;
+  border: 1px solid var(--gf-border) !important;
+  padding: 0 !important;
+  overflow: hidden;
 }
 
 .leaflet-popup-content {
-  font-size: 14px;
+  margin: 0 !important;
+  font-family: 'PingFang TC', 'Noto Sans TC', sans-serif !important;
+}
+
+.leaflet-popup-tip-container {
+  margin-top: -1px;
+}
+
+.gf-popup-card {
+  min-width: 210px;
+  max-width: 270px;
+  font-size: 13px;
+  padding: 12px 14px 14px;
+}
+
+.popup-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--gf-green-deep);
+  margin-bottom: 0.55rem;
+  padding-bottom: 0.45rem;
+  border-bottom: 2px solid var(--gf-green-pale);
+  letter-spacing: 0.02em;
+}
+
+.popup-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.32rem;
+}
+
+.popup-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+  line-height: 1.55;
+  color: var(--gf-text);
+}
+
+.popup-tag {
+  flex-shrink: 0;
+  width: 18px;
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.gf-badge {
+  display: inline-block;
+  background: var(--gf-green-pale);
+  color: var(--gf-green-deep);
+  padding: 1px 7px;
+  border-radius: var(--gf-radius-sm);
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.popup-link {
+  color: var(--gf-green-mid);
+  text-decoration: none;
+  word-break: break-all;
+}
+
+.popup-link:hover {
+  text-decoration: underline;
 }
 </style>
