@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { RouterLink, RouterView, useRoute } from 'vue-router'
-const route = useRoute()
+import { RouterLink, RouterView, useRoute } from "vue-router";
+const route = useRoute();
 </script>
 
 <template>
   <nav class="gf-nav">
     <RouterLink class="gf-nav-brand" to="/" tabindex="-1" aria-label="首頁">
-      <span class="brand-icon">🌾</span>
+      <span class="brand-icon">🪴</span>
       <span class="brand-name">無麩質台灣</span>
     </RouterLink>
     <div class="gf-nav-links">
@@ -81,7 +81,9 @@ const route = useRoute()
   color: var(--gf-text-muted);
   text-decoration: none;
   border-bottom: 2.5px solid transparent;
-  transition: background-color 0.2s, color 0.2s;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
   white-space: nowrap;
 }
 
